@@ -2,9 +2,7 @@ from otree.api import (
     models, widgets, BaseConstants, BaseSubsession, BaseGroup, BasePlayer,
     Currency as c, currency_range
 )
-import csv
-import json
-import random
+import csv, json, random, math
 import floppyforms.widgets
 import floppyforms.__future__ as forms
 
@@ -108,6 +106,32 @@ class Player(BasePlayer):
         if cur_value:
             return Constants.svoitems[value - 1].alter[cur_value]
 
+    def get_svo_angle(self):
+        tot_egos = []
+        tot_alters = []
+        for i in range(1, 7):
+            tot_egos.append(self.get_ego(i))
+            tot_alters.append(self.get_alter(i))
+        tot_egos = list(map(lambda x: x - 50, tot_egos))
+        tot_alters = list(map(lambda x: x - 50, tot_alters))
+        mean_ego = sum(tot_egos) / len(tot_egos)
+        mean_alter = sum(tot_alters) / len(tot_alters)
+        svo_ratio = mean_alter / mean_ego
+        print('RATIO:',svo_ratio)
+        angle_radians = math.atan(svo_ratio)
+        print('RADIANS:', angle_radians)
+        return math.degrees(angle_radians)
+
+    def get_svo_type(self, angle):
+        if -70 < angle <= -12.04:
+            return 'Competitive'
+        if -12.04< angle <=22.45:
+            return 'Individualistic'
+        if 22.45<angle <=57.15:
+            return 'Prosocial'
+        if 57.15<angle <=120:
+            return 'Altruist'
+
     svo1ego = models.IntegerField()
     svo2ego = models.IntegerField()
     svo3ego = models.IntegerField()
@@ -121,3 +145,6 @@ class Player(BasePlayer):
     svo4alter = models.IntegerField()
     svo5alter = models.IntegerField()
     svo6alter = models.IntegerField()
+
+    svo_angle = models.FloatField()
+    svo_type = models.CharField()

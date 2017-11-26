@@ -22,9 +22,15 @@ class SvoChoice(object):
     ego = None
     alter = None
 
-    def __init__( self,ego, alter):
-        self.ego =list(map(int,ego.split(';')))
-        self.alter = list(map(int,alter.split(';')))
+    def __init__(self, ego, alter):
+        self.ego = list(map(int, ego.split(';')))
+        self.alter = list(map(int, alter.split(';')))
+
+    def get_ego(self, index):
+        return self.ego[index]
+
+    def get_alter(self, index):
+        return self.alter[index]
 
 
 class SvoSelector(forms.RadioSelect):
@@ -48,14 +54,13 @@ class Constants(BaseConstants):
     name_in_url = 'svo'
     players_per_group = None
     num_rounds = 1
-    random_order = True
+    random_order = False
     svoitems = []
     with open('svo/svo_choices.csv') as f:
         reader = csv.reader(f)
         for i in list(reader):
             svoitems.append(SvoChoice(i[0], i[1]))
-    for i in svoitems:
-        print(i.ego)
+
     svo_size = len(svoitems)
 
 
@@ -76,22 +81,33 @@ class Player(BasePlayer):
     item_order = models.CharField()
     svo1dec = models.IntegerField(widget=SvoSelector(top_row=Constants.svoitems[0].ego,
                                                      bottom_row=Constants.svoitems[0].alter),
-                                  choices=range(1, 10))
+                                  choices=range(9))
     svo2dec = models.IntegerField(widget=SvoSelector(top_row=Constants.svoitems[1].ego,
                                                      bottom_row=Constants.svoitems[1].alter),
-                                  choices=range(1, 10))
+                                  choices=range(9))
     svo3dec = models.IntegerField(widget=SvoSelector(top_row=Constants.svoitems[2].ego,
                                                      bottom_row=Constants.svoitems[2].alter),
-                                  choices=range(1, 10))
+                                  choices=range(9))
     svo4dec = models.IntegerField(widget=SvoSelector(top_row=Constants.svoitems[3].ego,
                                                      bottom_row=Constants.svoitems[3].alter),
-                                  choices=range(1, 10))
+                                  choices=range(9))
     svo5dec = models.IntegerField(widget=SvoSelector(top_row=Constants.svoitems[4].ego,
                                                      bottom_row=Constants.svoitems[4].alter),
-                                  choices=range(1, 10))
+                                  choices=range(9))
     svo6dec = models.IntegerField(widget=SvoSelector(top_row=Constants.svoitems[5].ego,
                                                      bottom_row=Constants.svoitems[5].alter),
-                                  choices=range(1, 10))
+                                  choices=range(9))
+
+    def get_ego(self, value):
+        cur_value = getattr(self, 'svo{}dec'.format(value))
+        if cur_value:
+            return Constants.svoitems[value - 1].ego[cur_value]
+
+    def get_alter(self, value):
+        cur_value = getattr(self, 'svo{}dec'.format(value))
+        if cur_value:
+            return Constants.svoitems[value - 1].alter[cur_value]
+
     svo1ego = models.IntegerField()
     svo2ego = models.IntegerField()
     svo3ego = models.IntegerField()

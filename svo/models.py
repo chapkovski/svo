@@ -1,0 +1,107 @@
+from otree.api import (
+    models, widgets, BaseConstants, BaseSubsession, BaseGroup, BasePlayer,
+    Currency as c, currency_range
+)
+import csv
+import json
+import random
+import floppyforms.widgets
+import floppyforms.__future__ as forms
+
+author = 'Philipp Chapkovski, UZH'
+
+doc = """
+Social Value Orientation by R.Murphy, K.Ackermann, M.Hangraaf:
+Murphy, R. O., Ackermann, K. A., & Handgraaf, M. J. J. (2011).
+ Measuring Social Value Orientation. Judgment and Decision Making, 6(8), 771-781,
+ see more detailed information: http://vlab.ethz.ch/styled-2/index.html
+"""
+
+
+class SvoChoice(object):
+    ego = None
+    alter = None
+
+    def __init__( self,ego, alter):
+        self.ego =list(map(int,ego.split(';')))
+        self.alter = list(map(int,alter.split(';')))
+
+
+class SvoSelector(forms.RadioSelect):
+    top_row = None
+    bottom_row = None
+    template_name = 'svo/svo_selector.html'
+
+    def __init__(self, top_row, bottom_row, *args, **kwargs):
+        self.top_row = top_row
+        self.bottom_row = bottom_row
+        super().__init__(*args, **kwargs)
+
+    def get_context(self, *args, **kwargs):
+        context = super().get_context(*args, **kwargs)
+        context['top_row'] = self.top_row
+        context['bottom_row'] = self.bottom_row
+        return context
+
+
+class Constants(BaseConstants):
+    name_in_url = 'svo'
+    players_per_group = None
+    num_rounds = 1
+    random_order = True
+    svoitems = []
+    with open('svo/svo_choices.csv') as f:
+        reader = csv.reader(f)
+        for i in list(reader):
+            svoitems.append(SvoChoice(i[0], i[1]))
+    for i in svoitems:
+        print(i.ego)
+    svo_size = len(svoitems)
+
+
+class Subsession(BaseSubsession):
+    def creating_session(self):
+        for p in self.get_players():
+            q_order = list(range(1, Constants.svo_size + 1))
+            if Constants.random_order:
+                random.shuffle(q_order)
+            p.item_order = json.dumps(q_order)
+
+
+class Group(BaseGroup):
+    pass
+
+
+class Player(BasePlayer):
+    item_order = models.CharField()
+    svo1dec = models.IntegerField(widget=SvoSelector(top_row=Constants.svoitems[0].ego,
+                                                     bottom_row=Constants.svoitems[0].alter),
+                                  choices=range(1, 10))
+    svo2dec = models.IntegerField(widget=SvoSelector(top_row=Constants.svoitems[1].ego,
+                                                     bottom_row=Constants.svoitems[1].alter),
+                                  choices=range(1, 10))
+    svo3dec = models.IntegerField(widget=SvoSelector(top_row=Constants.svoitems[2].ego,
+                                                     bottom_row=Constants.svoitems[2].alter),
+                                  choices=range(1, 10))
+    svo4dec = models.IntegerField(widget=SvoSelector(top_row=Constants.svoitems[3].ego,
+                                                     bottom_row=Constants.svoitems[3].alter),
+                                  choices=range(1, 10))
+    svo5dec = models.IntegerField(widget=SvoSelector(top_row=Constants.svoitems[4].ego,
+                                                     bottom_row=Constants.svoitems[4].alter),
+                                  choices=range(1, 10))
+    svo6dec = models.IntegerField(widget=SvoSelector(top_row=Constants.svoitems[5].ego,
+                                                     bottom_row=Constants.svoitems[5].alter),
+                                  choices=range(1, 10))
+    svo1ego = models.IntegerField()
+    svo2ego = models.IntegerField()
+    svo3ego = models.IntegerField()
+    svo4ego = models.IntegerField()
+    svo5ego = models.IntegerField()
+    svo6ego = models.IntegerField()
+
+    svo1alter = models.IntegerField()
+    svo2alter = models.IntegerField()
+    svo3alter = models.IntegerField()
+    svo4alter = models.IntegerField()
+    svo5alter = models.IntegerField()
+    svo6alter = models.IntegerField()

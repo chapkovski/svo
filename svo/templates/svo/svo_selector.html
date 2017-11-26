@@ -1,0 +1,42 @@
+{{ attrs.id }}<table class="table table-responsive">
+    <tr>
+    <th>You receive:</th>
+        {% for i in top_row %}
+            <td><label  for="{{ attrs.id }}_{{ forloop.counter }}">{{ i }}</label>
+            </td>
+        {% endfor %}
+    </tr>
+    <tr>
+    <th></th>
+        {% for group_name, choices in optgroups %}
+            {% for choice in choices %}
+                <td><label class="radio-inline" for="{{ attrs.id }}_{{ forloop.counter }}"><input type="radio"
+                                                                                                  id="{{ attrs.id }}_{{ forloop.counter }}"
+                                                                                                  value="{{ choice.0 }}"
+                                                                                                  name="{{ name }}"
+                        {% if required %}
+                                                                                                  required{% endif %}
+                        {% if choice.0 in value %} checked{% endif %}> </label>
+                </td>
+
+            {% endfor %}
+        {% endfor %}
+    </tr>
+    <tr>
+    <th>Other receives:</th>
+
+        {% for i in bottom_row %}
+            <td><label  for="{{ attrs.id }}_{{ forloop.counter }}">{{ i }}</label></td>
+        {% endfor %}
+    </tr>
+</table>
+
+<style>
+    .table td, .table th {
+    border: none!important;
+}
+
+table.table.table-responsive{
+    border: 1px solid black;
+}
+</style>

@@ -1,0 +1,17 @@
+{% extends "global/Page.html" %}
+{% load staticfiles otree %}
+
+{% block title %}
+    SVO measure
+{% endblock %}
+
+{% block content %}
+    {% for f in form %}
+        {{ f.errors }}
+        <h3>Decision {{ forloop.counter }}</h3>
+        {{ f }}
+    {% endfor %}
+
+    {% next_button %}
+
+{% endblock %}

@@ -61,9 +61,6 @@ class Group(BaseGroup):
     pass
 
 
-
-
-
 class Player(BasePlayer):
     item_order = models.CharField()
     svo1dec = SvoField(svo_item=1)

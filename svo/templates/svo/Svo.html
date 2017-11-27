@@ -6,6 +6,26 @@
 {% endblock %}
 
 {% block content %}
+    <div class="well instructions well-lg">
+        <p>
+            In this task you have been randomly paired with another person, whom we will refer to as the other. This
+            other
+            person is someone you
+            do not know and will remain mutually anonymous. All of your choices are completely confidential. You will be
+            making a series of
+            decisions about allocating resources between you and this other person. For each of the following questions,
+            please indicate the
+            distribution you prefer most by marking the respective position along the midline. You can only make one
+            mark
+            for each question.</p>
+
+        <p>
+            There are no right or wrong answers, this is all about personal preferences. As you can see, your choices
+            will influence both the
+            amount of
+            money you receive
+            as well as the amount of money the other receives.</p>
+    </div>
     {% for f in form %}
         {{ f.errors }}
         <h3>Decision {{ forloop.counter }}</h3>

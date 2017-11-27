@@ -3,8 +3,9 @@ from otree.api import (
     Currency as c, currency_range
 )
 import csv, json, random, math
-import floppyforms.widgets
-import floppyforms.__future__ as forms
+
+from .fields import SvoField
+
 
 author = 'Philipp Chapkovski, UZH'
 
@@ -31,21 +32,6 @@ class SvoChoice(object):
         return self.alter[index]
 
 
-class SvoSelector(forms.RadioSelect):
-    top_row = None
-    bottom_row = None
-    template_name = 'svo/svo_selector.html'
-
-    def __init__(self, top_row, bottom_row, *args, **kwargs):
-        self.top_row = top_row
-        self.bottom_row = bottom_row
-        super().__init__(*args, **kwargs)
-
-    def get_context(self, *args, **kwargs):
-        context = super().get_context(*args, **kwargs)
-        context['top_row'] = self.top_row
-        context['bottom_row'] = self.bottom_row
-        return context
 
 
 class Constants(BaseConstants):
@@ -75,26 +61,17 @@ class Group(BaseGroup):
     pass
 
 
+
+
+
 class Player(BasePlayer):
     item_order = models.CharField()
-    svo1dec = models.IntegerField(widget=SvoSelector(top_row=Constants.svoitems[0].ego,
-                                                     bottom_row=Constants.svoitems[0].alter),
-                                  choices=range(9))
-    svo2dec = models.IntegerField(widget=SvoSelector(top_row=Constants.svoitems[1].ego,
-                                                     bottom_row=Constants.svoitems[1].alter),
-                                  choices=range(9))
-    svo3dec = models.IntegerField(widget=SvoSelector(top_row=Constants.svoitems[2].ego,
-                                                     bottom_row=Constants.svoitems[2].alter),
-                                  choices=range(9))
-    svo4dec = models.IntegerField(widget=SvoSelector(top_row=Constants.svoitems[3].ego,
-                                                     bottom_row=Constants.svoitems[3].alter),
-                                  choices=range(9))
-    svo5dec = models.IntegerField(widget=SvoSelector(top_row=Constants.svoitems[4].ego,
-                                                     bottom_row=Constants.svoitems[4].alter),
-                                  choices=range(9))
-    svo6dec = models.IntegerField(widget=SvoSelector(top_row=Constants.svoitems[5].ego,
-                                                     bottom_row=Constants.svoitems[5].alter),
-                                  choices=range(9))
+    svo1dec = SvoField(svo_item=1)
+    svo2dec = SvoField(svo_item=2)
+    svo3dec = SvoField(svo_item=3)
+    svo4dec = SvoField(svo_item=4)
+    svo5dec = SvoField(svo_item=5)
+    svo6dec = SvoField(svo_item=6)
 
     def get_ego(self, value):
         cur_value = getattr(self, 'svo{}dec'.format(value))
@@ -117,19 +94,17 @@ class Player(BasePlayer):
         mean_ego = sum(tot_egos) / len(tot_egos)
         mean_alter = sum(tot_alters) / len(tot_alters)
         svo_ratio = mean_alter / mean_ego
-        print('RATIO:',svo_ratio)
         angle_radians = math.atan(svo_ratio)
-        print('RADIANS:', angle_radians)
         return math.degrees(angle_radians)
 
     def get_svo_type(self, angle):
         if -70 < angle <= -12.04:
             return 'Competitive'
-        if -12.04< angle <=22.45:
+        if -12.04 < angle <= 22.45:
             return 'Individualistic'
-        if 22.45<angle <=57.15:
+        if 22.45 < angle <= 57.15:
             return 'Prosocial'
-        if 57.15<angle <=120:
+        if 57.15 < angle <= 120:
             return 'Altruist'
 
     svo1ego = models.IntegerField()

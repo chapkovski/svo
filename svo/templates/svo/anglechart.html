@@ -1,3 +1,4 @@
+{% load staticfiles otree %}
 <style>
     #container {
     width: 400px;
@@ -158,8 +159,8 @@ $(function () {
 });
 </script>
 
-<script src="http://code.highcharts.com/highcharts.js"></script>
-<script src="http://code.highcharts.com/modules/exporting.js"></script>
+<script src="{% static 'highcharts/highcharts.js' %}"></script>
+
 
 <div id="container"></div>
 

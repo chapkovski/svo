@@ -1,2 +1,2 @@
-otree-core>=1.4.27
+otree-core>=1.4.28
 Django==1.8.8 # for heroku, needs to be explicitly in requirements file

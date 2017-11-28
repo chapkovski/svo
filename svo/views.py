@@ -25,7 +25,8 @@ class Svo(Page):
 
 
 class Results(Page):
-    pass
+    def vars_for_template(self):
+        return {'angle':round(self.player.svo_angle)}
 
 
 page_sequence = [

@@ -1,0 +1,166 @@
+<style>
+    #container {
+    width: 400px;
+    height: 320px;
+    margin: 1em auto;
+}
+</style>
+<script>
+
+    var circleX = 50;
+    var circleY = 50;
+    var circleR = 100;
+$(function () { 
+    $('#container').highcharts({
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: 'Your SVO angle'
+        },
+        legend:{enabled:false},
+        tooltip: { enabled: false },
+        exporting: { enabled: false },
+        credits: {enabled:false},
+        xAxis: {
+            height: 200, 
+            width: 200,
+            title: {
+                text: 'Payoff to self'
+            },
+            min: 0,
+            max: 100,
+                    tickInterval: 25,
+         gridLineWidth: 1,
+         gridLineDashStyle: 'dot',
+        },
+
+        yAxis: {
+            height: 200,            
+            width: 200,
+            title: {
+                text: 'Payoff to other'
+            },
+            min: 0,
+            max: 100,
+                           tickInterval: 25,
+         gridLineWidth: 1,
+         gridLineDashStyle: 'dot',
+        },
+
+         series: [
+        {
+            data: [[circleX, circleY]],
+            linkedTo: 'other',
+            marker: {
+                radius: circleR,
+                lineColor: 'red',
+                fillColor: 'transparent',
+                lineWidth: 1,
+                symbol: 'circle'
+            }
+        },
+        {
+      name: 'main',
+      id: 'main',
+      lineWidth: 0.5,
+      data: [
+        [0, 0],
+        [100,100]
+      ]
+    },
+     {
+      name: 'comp-ind',
+      id: 'comp-ind',
+      fillColor: 'black',
+                        marker: {
+                        symbol:'circle',
+                fillColor: 'black',
+                lineWidth: 0.5,
+                lineColor: 'black' // inherit from series
+            },
+      data: [
+        [85, 15],
+        [100,50]
+        
+      ],
+      lineColor: 'black',
+      lineWidth:0.5
+    },
+         {
+      name: 'ind-pros',
+      id: 'ind-pros',
+            lineColor: 'black',
+            lineWidth: 0.5,
+            fillColor: 'black',
+                        marker: {
+                        symbol:'circle',
+                fillColor: 'black',
+                lineWidth: 0.5,
+                lineColor: 'black' // inherit from series
+            },
+      data: [
+        [100, 50],
+        [85,85]
+        
+      ]
+    },
+             {
+      name: 'pros-altr',
+      id: 'pros-altr',
+            lineColor: 'black',
+            lineWidth: 0.5,
+                        fillColor: 'black',
+                        marker: {
+                        symbol:'circle',
+                fillColor: 'black',
+                lineWidth: 0.5,
+                lineColor: 'black' // inherit from series
+            },
+      data: [
+        [85, 85],
+        [50,100]
+        
+      ]
+    },
+     {
+      name: 'decision',
+      id: 'decision',
+            dataLabels: {
+                enabled: true,
+                align: 'left',
+                formatter: function() {
+                    if (this.point.x != 50 && this.point.y != 50) {
+                        return 'Angle:' +{{ angle }};
+                    } else {
+                        return null;
+                    }
+                },
+                crop: false,
+                overflow: false
+            },
+      data: [
+        [50, 50],
+        [{{ player.mean_ego }},{{player.mean_alter}}]
+      ]
+    }
+        ]
+    },
+    
+    function(chart) {
+      chart.renderer.label('Altruistic', 140, 25).add();
+      chart.renderer.text('Prosocial', 260, 80).add();
+      chart.renderer.text('Competitive', 280, 200).add();
+      chart.renderer.text('Invididualistic', 280, 140).add();
+
+  }
+    );
+});
+</script>
+
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+<div id="container"></div>
+
+

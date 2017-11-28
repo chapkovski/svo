@@ -6,7 +6,6 @@ import csv, json, random, math
 
 from .fields import SvoField
 
-
 author = 'Philipp Chapkovski, UZH'
 
 doc = """
@@ -30,8 +29,6 @@ class SvoChoice(object):
 
     def get_alter(self, index):
         return self.alter[index]
-
-
 
 
 class Constants(BaseConstants):
@@ -72,13 +69,13 @@ class Player(BasePlayer):
 
     def get_ego(self, value):
         cur_value = getattr(self, 'svo{}dec'.format(value))
-        if cur_value:
-            return Constants.svoitems[value - 1].ego[cur_value]
+        if cur_value is not None:
+            return Constants.svoitems[value-1].ego[cur_value]
 
     def get_alter(self, value):
         cur_value = getattr(self, 'svo{}dec'.format(value))
-        if cur_value:
-            return Constants.svoitems[value - 1].alter[cur_value]
+        if cur_value is not None:
+            return Constants.svoitems[value-1].alter[cur_value]
 
     def get_svo_angle(self):
         tot_egos = []
@@ -86,6 +83,8 @@ class Player(BasePlayer):
         for i in range(1, 7):
             tot_egos.append(self.get_ego(i))
             tot_alters.append(self.get_alter(i))
+        self.mean_ego = sum(tot_egos) / len(tot_egos)
+        self.mean_alter = sum(tot_alters) / len(tot_alters)
         tot_egos = list(map(lambda x: x - 50, tot_egos))
         tot_alters = list(map(lambda x: x - 50, tot_alters))
         mean_ego = sum(tot_egos) / len(tot_egos)
@@ -103,7 +102,8 @@ class Player(BasePlayer):
             return 'Prosocial'
         if 57.15 < angle <= 120:
             return 'Altruist'
-
+    mean_ego=models.FloatField()
+    mean_alter=models.FloatField()
     svo1ego = models.IntegerField()
     svo2ego = models.IntegerField()
     svo3ego = models.IntegerField()

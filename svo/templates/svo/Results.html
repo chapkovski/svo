@@ -6,6 +6,10 @@
 {% endblock %}
 
 {% block content %}
+    <div class="jumbotron">
+        <h3>Your SVO angle is: <b>{{ angle }}&#730;</b></h3>
+    <h3>Your SVO type is: <b>{{ player.svo_type }}</b></h3>
+    </div>
     {% include 'svo/anglechart.html' %}
     {% next_button %}
 {% endblock %}

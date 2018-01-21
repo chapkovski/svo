@@ -6,7 +6,7 @@ import random, json
 
 
 class Svo(Page):
-    form_model = models.Player
+    form_model = 'player'
 
     def is_displayed(self):
         print(self.player.get_ego(1))

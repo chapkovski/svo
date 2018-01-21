@@ -1,4 +1,4 @@
-import floppyforms.__future__ as forms
+from django import forms
 
 class SvoSelector(forms.RadioSelect):
     top_row = None

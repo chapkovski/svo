@@ -9,11 +9,11 @@ class Svo(Page):
     form_model = 'player'
 
     def is_displayed(self):
-        print(self.player.get_ego(1))
         return True
 
     def get_form_fields(self):
         qs = ['svo{}dec'.format(i) for i in json.loads(self.player.item_order)]
+
         return qs
 
     def before_next_page(self):

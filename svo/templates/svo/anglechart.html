@@ -142,7 +142,7 @@ $(function () {
             },
       data: [
         [50, 50],
-        [{{ player.mean_ego }},{{player.mean_alter}}]
+        [{{ player.mean_ego|stringformat:"f"  }},{{player.mean_alter|stringformat:"f" }}]
       ]
     }
         ]

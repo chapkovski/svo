@@ -1,3 +1,1 @@
-otree-core>=1.4.27
-otree-custom-export>=0.1.5
-
+otree>2.0

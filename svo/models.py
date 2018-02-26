@@ -60,6 +60,7 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
     item_order = models.CharField()
+    # TODO: move to separate model
     svo1dec = SvoField(svo_item=1)
     svo2dec = SvoField(svo_item=2)
     svo3dec = SvoField(svo_item=3)

@@ -57,6 +57,8 @@ class Subsession(BaseSubsession):
 class Group(BaseGroup):
     pass
 
+class SVO(djmodels.Model):
+    ...
 
 class Player(BasePlayer):
     item_order = models.CharField()

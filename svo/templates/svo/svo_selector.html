@@ -1,16 +1,16 @@
 <table class="table svorows">
     <tr>
-    <th>You receive:</th>
+        <th>You receive:</th>
         {% for i in top_row %}
-            <td><label  for="{{ attrs.id }}_{{ forloop.counter }}">{{ i }}</label>
+            <td><label for="{{ attrs.id }}_{{ forloop.counter }}">{{ i }}</label>
             </td>
         {% endfor %}
     </tr>
     <tr>
-    <th></th>
+        <th></th>
 
 
-            {% with id=widget.attrs.id %}
+        {% with id=widget.attrs.id %}
             {% for group, options, index in widget.optgroups %}
                 {% for option in options %}
                     <td>
@@ -26,20 +26,20 @@
 
     </tr>
     <tr>
-    <th>Other receives:</th>
+        <th>Other receives:</th>
 
         {% for i in bottom_row %}
-            <td><label  for="{{ attrs.id }}_{{ forloop.counter }}">{{ i }}</label></td>
+            <td><label for="{{ attrs.id }}_{{ forloop.counter }}">{{ i }}</label></td>
         {% endfor %}
     </tr>
 </table>
 
 <style>
     .table td, .table th {
-    border: none!important;
-}
+        border: none !important;
+    }
 
-table.table.svorows{
-    border: 1px solid black;
-}
+    table.table.svorows {
+        border: 1px solid black;
+    }
 </style>

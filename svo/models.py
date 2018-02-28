@@ -5,6 +5,7 @@ from otree.api import (
 import csv, json, random, math
 
 from .fields import SvoField
+from django.db import models as djmodels
 
 author = 'Philipp Chapkovski, UZH'
 
@@ -30,6 +31,12 @@ class SvoChoice(object):
     def get_alter(self, index):
         return self.alter[index]
 
+    @property
+    def choices(self):
+        assert len(self.ego) == len(
+            self.alter), 'the length of ego and alter choices should be the same, check your CSV'
+        return [(i,'') for i in range(len(self.ego))]
+
 
 class Constants(BaseConstants):
     name_in_url = 'svo'
@@ -48,37 +55,30 @@ class Constants(BaseConstants):
 class Subsession(BaseSubsession):
     def creating_session(self):
         for p in self.get_players():
-            q_order = list(range(1, Constants.svo_size + 1))
-            if Constants.random_order:
-                random.shuffle(q_order)
-            p.item_order = json.dumps(q_order)
+            # TODO: not very nice implicit thing here is that svo items are numbered in an order they are
+            # TODO: listed in svo_choices.csv file. Perhaps makes sense to number them explicitly
+            for i, s in enumerate(Constants.svoitems):
+                # we correct +1 to be consistent with Murphy's enumeration. Again if we set this explicitley
+                # this BS is not needed
+                p.svo_set.create(item_id=i + 1)
 
 
 class Group(BaseGroup):
     pass
 
-class SVO(djmodels.Model):
-    ...
 
 class Player(BasePlayer):
     item_order = models.CharField()
-    # TODO: move to separate model
-    svo1dec = SvoField(svo_item=1)
-    svo2dec = SvoField(svo_item=2)
-    svo3dec = SvoField(svo_item=3)
-    svo4dec = SvoField(svo_item=4)
-    svo5dec = SvoField(svo_item=5)
-    svo6dec = SvoField(svo_item=6)
 
     def get_ego(self, value):
         cur_value = getattr(self, 'svo{}dec'.format(value))
         if cur_value is not None:
-            return Constants.svoitems[value-1].ego[cur_value]
+            return Constants.svoitems[value - 1].ego[cur_value]
 
     def get_alter(self, value):
         cur_value = getattr(self, 'svo{}dec'.format(value))
         if cur_value is not None:
-            return Constants.svoitems[value-1].alter[cur_value]
+            return Constants.svoitems[value - 1].alter[cur_value]
 
     def get_svo_angle(self):
         tot_egos = []
@@ -105,21 +105,22 @@ class Player(BasePlayer):
             return 'Prosocial'
         if 57.15 < angle <= 120:
             return 'Altruist'
-    mean_ego=models.FloatField()
-    mean_alter=models.FloatField()
-    svo1ego = models.IntegerField()
-    svo2ego = models.IntegerField()
-    svo3ego = models.IntegerField()
-    svo4ego = models.IntegerField()
-    svo5ego = models.IntegerField()
-    svo6ego = models.IntegerField()
 
-    svo1alter = models.IntegerField()
-    svo2alter = models.IntegerField()
-    svo3alter = models.IntegerField()
-    svo4alter = models.IntegerField()
-    svo5alter = models.IntegerField()
-    svo6alter = models.IntegerField()
-
+    mean_ego = models.FloatField()
+    mean_alter = models.FloatField()
     svo_angle = models.FloatField()
     svo_type = models.CharField()
+
+
+class SVO(djmodels.Model):
+    answer = models.IntegerField(doc='choice of player for the specific item')
+    player = djmodels.ForeignKey(to=Player, help_text='connection to player model')
+    item_id = models.IntegerField(doc="""an id of svo as it is listed here:
+     http://ryanomurphy.com/styled-2/downloads/index.html
+     have a look at both primary (1-6) and secondary (7-15) measures. 
+     Nothing :) can limit you to add more
+     """)
+
+    def get_svo_object(self):
+        # TODO: when we explicitely state item id in svo object, no need for this BS with -1
+        return Constants.svoitems[self.item_id - 1]

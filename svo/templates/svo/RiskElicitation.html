@@ -1,0 +1,57 @@
+{% extends "global/Page.html" %}
+{% load staticfiles otree %}
+
+{% block title %}
+    Module 3 - Decision
+{% endblock %}
+
+{% block content %}
+Please choose Option A or Option B in each of 10 pairs
+{{ formset.management_form }}
+<table class="table1 table table-striped table-hover table-bordered text-center">
+    <thead>
+    <tr>
+        <th></th>
+        <th colspan="2">Option A</th>
+        <th></th>
+        <th colspan="2">Option B</th>
+        <th></th>
+    </tr>
+    <tr>
+        <th></th>
+        <th>&pound;{{ Constants.risk_choices_A.0 }}</th>
+        <th>&pound;{{ Constants.risk_choices_A.1 }}</th>
+        <th></th>
+        <th>&pound;{{ Constants.risk_choices_B.0 }}</th>
+        <th>&pound;{{ Constants.risk_choices_B.1 }}</th>
+
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+
+    {% for f in formset %}
+        <tr>
+
+            <td>{{ f.answer.0 }} </td>
+
+
+            <td>{{ f.instance.left_col }}%</td>
+            <td>{{ f.instance.right_col }}%</td>
+            <td> {% for hidden in f.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}</td>
+            <td>{{ f.instance.left_col }}%</td>
+            <td>{{ f.instance.right_col }}%</td>
+            <td>{{ f.answer.1 }}</td>
+        </tr>
+
+    {% endfor %}
+    </tbody>
+</table>
+  
+
+
+{% next_button %}
+
+{% endblock %}

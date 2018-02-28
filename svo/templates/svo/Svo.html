@@ -8,7 +8,7 @@
 {% block content %}
     {{ formset.management_form }}
     {% for f in formset %}
-        <h1>{{ f.instance.item_id }}</h1>
+        <h5> Decision {{ forloop.counter}}:</h5>
         {% for field in f %}
             {% formfield field label=''%}
         {% endfor %}

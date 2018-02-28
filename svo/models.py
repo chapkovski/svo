@@ -50,17 +50,21 @@ class Constants(BaseConstants):
             svoitems.append(SvoChoice(i[0], i[1]))
 
     svo_size = len(svoitems)
-    print('AAAAA', svo_size)
 
 
 class Subsession(BaseSubsession):
     def creating_session(self):
         # TODO.DOC add random_order info to documentation
         random_order = self.session.config.get('random_order')
+        secondary = self.session.config.get('secondary')
         for p in self.get_players():
             # TODO: not very nice implicit thing here is that svo items are numbered in an order they are
             # TODO: listed in svo_choices.csv file. Perhaps makes sense to number them explicitly
-            for i, s in enumerate(Constants.svoitems):
+            # TODO.DOC: add to doc that we define secondary/primary here based on settings config
+            # TODO: by default it is short version
+            maxlen = Constants.svo_size if secondary else 6
+            svoitems = Constants.svoitems[:maxlen]
+            for i, s in enumerate(svoitems):
                 # we correct +1 to be consistent with Murphy's enumeration. Again if we set this explicitley
                 # this BS is not needed
                 order = random.random() if random_order else i

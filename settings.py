@@ -105,6 +105,7 @@ SESSION_CONFIGS = [
         'display_name': 'SVO Measure (Murphy, Ackermann, and  Handgraaf, 2011)',
         'num_demo_participants': 1,
         'app_sequence': ['svo'],
+        'random_order': True
     }
 ]
 

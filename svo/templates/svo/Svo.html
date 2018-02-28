@@ -10,10 +10,11 @@
     {% for f in formset %}
         <h1>{{ f.instance.item_id }}</h1>
         {% for field in f %}
-            {% formfield field %}
+            {% formfield field label=''%}
         {% endfor %}
     {% endfor %}
 
     {% next_button %}
 
 {% endblock %}
+

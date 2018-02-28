@@ -35,7 +35,7 @@ class SvoChoice(object):
     def choices(self):
         assert len(self.ego) == len(
             self.alter), 'the length of ego and alter choices should be the same, check your CSV'
-        return [(i,'') for i in range(len(self.ego))]
+        return [(i, '') for i in range(len(self.ego))]
 
 
 class Constants(BaseConstants):
@@ -50,17 +50,21 @@ class Constants(BaseConstants):
             svoitems.append(SvoChoice(i[0], i[1]))
 
     svo_size = len(svoitems)
+    print('AAAAA', svo_size)
 
 
 class Subsession(BaseSubsession):
     def creating_session(self):
+        # TODO.DOC add random_order info to documentation
+        random_order = self.session.config.get('random_order')
         for p in self.get_players():
             # TODO: not very nice implicit thing here is that svo items are numbered in an order they are
             # TODO: listed in svo_choices.csv file. Perhaps makes sense to number them explicitly
             for i, s in enumerate(Constants.svoitems):
                 # we correct +1 to be consistent with Murphy's enumeration. Again if we set this explicitley
                 # this BS is not needed
-                p.svo_set.create(item_id=i + 1)
+                order = random.random() if random_order else i
+                p.svo_set.create(item_id=i + 1, showing_order=order)
 
 
 class Group(BaseGroup):
@@ -68,48 +72,43 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
-    item_order = models.CharField()
-
-    def get_ego(self, value):
-        cur_value = getattr(self, 'svo{}dec'.format(value))
-        if cur_value is not None:
-            return Constants.svoitems[value - 1].ego[cur_value]
-
-    def get_alter(self, value):
-        cur_value = getattr(self, 'svo{}dec'.format(value))
-        if cur_value is not None:
-            return Constants.svoitems[value - 1].alter[cur_value]
-
-    def get_svo_angle(self):
-        tot_egos = []
-        tot_alters = []
-        for i in range(1, 7):
-            tot_egos.append(self.get_ego(i))
-            tot_alters.append(self.get_alter(i))
-        self.mean_ego = sum(tot_egos) / len(tot_egos)
-        self.mean_alter = sum(tot_alters) / len(tot_alters)
-        tot_egos = list(map(lambda x: x - 50, tot_egos))
-        tot_alters = list(map(lambda x: x - 50, tot_alters))
-        mean_ego = sum(tot_egos) / len(tot_egos)
-        mean_alter = sum(tot_alters) / len(tot_alters)
-        svo_ratio = mean_alter / mean_ego
-        angle_radians = math.atan(svo_ratio)
-        return math.degrees(angle_radians)
-
-    def get_svo_type(self, angle):
-        if -70 < angle <= -12.04:
-            return 'Competitive'
-        if -12.04 < angle <= 22.45:
-            return 'Individualistic'
-        if 22.45 < angle <= 57.15:
-            return 'Prosocial'
-        if 57.15 < angle <= 120:
-            return 'Altruist'
-
+    dump_answer = models.StringField(doc='storing svo answers in a string for demo and export purposes')
     mean_ego = models.FloatField()
     mean_alter = models.FloatField()
     svo_angle = models.FloatField()
     svo_type = models.CharField()
+
+    def dumping_answer(self):
+        q = self.svo_set.all()
+        return [i.to_dump() for i in q]
+
+    def set_svo_angle(self):
+        q = self.svo_set.all()
+        tot_egos = [i.get_ego_value() for i in q]
+        tot_alters = [i.get_alter_value() for i in q]
+        self.mean_ego = sum(tot_egos) / len(tot_egos)
+        self.mean_alter = sum(tot_alters) / len(tot_alters)
+        mean_ego = self.mean_ego - 50
+        mean_alter = self.mean_alter - 50
+        svo_ratio = mean_alter / mean_ego
+        angle_radians = math.atan(svo_ratio)
+        self.svo_angle = math.degrees(angle_radians)
+        return self.svo_angle
+
+    def set_svo_type(self):
+        assert isinstance(self.svo_angle, float), 'Cannot define svo type without svo angle'
+        angle = self.svo_angle
+        if -70 < angle <= -12.04:
+            st = 'Competitive'
+        if -12.04 < angle <= 22.45:
+            st = 'Individualistic'
+        if 22.45 < angle <= 57.15:
+            st = 'Prosocial'
+        if 57.15 < angle <= 120:
+            st = 'Altruist'
+        assert st is not None, 'Cannot define the current svo type based on data.'
+        self.svo_type = st
+        return st
 
 
 class SVO(djmodels.Model):
@@ -120,7 +119,19 @@ class SVO(djmodels.Model):
      have a look at both primary (1-6) and secondary (7-15) measures. 
      Nothing :) can limit you to add more
      """)
+    showing_order = models.FloatField(doc='to randomize items')
 
     def get_svo_object(self):
         # TODO: when we explicitely state item id in svo object, no need for this BS with -1
         return Constants.svoitems[self.item_id - 1]
+
+    def get_ego_value(self):
+        obj = self.get_svo_object()
+        return obj.get_ego(self.answer)
+
+    def get_alter_value(self):
+        obj = self.get_svo_object()
+        return obj.get_alter(self.answer)
+
+    def to_dump(self):
+        return '{},{},{}'.format(self.item_id, self.get_ego_value(), self.get_alter_value())

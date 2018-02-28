@@ -6,20 +6,15 @@ import random, json
 from .forms import SVOFormSet
 
 
-
 class Results(Page):
     ...
-    # def vars_for_template(self):
-    #     return {'angle':round(self.player.svo_angle)}
-
-
+    def vars_for_template(self):
+        return {'angle':round(self.player.svo_angle)}
 
 
 class Svo(Page):
-
-
     def get_queryset(self):
-        return self.player.svo_set.all()
+        return self.player.svo_set.all().order_by("showing_order")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -32,7 +27,6 @@ class Svo(Page):
             data=self.request.POST, files=self.request.FILES, instance=self.object)
         context = super().get_context_data()
 
-
         formset = SVOFormSet(self.request.POST, instance=self.player, queryset=self.get_queryset())
         context['formset'] = formset
         if not formset.is_valid():
@@ -43,7 +37,9 @@ class Svo(Page):
         return super().post()
 
     def before_next_page(self):
-        ...
+        self.player.dump_answer = self.player.dumping_answer()
+        self.player.set_svo_angle()
+        self.player.set_svo_type()
 
 
 page_sequence = [

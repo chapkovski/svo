@@ -69,6 +69,9 @@ class Subsession(BaseSubsession):
                 # this BS is not needed
                 order = random.random() if random_order else i
                 p.svo_set.create(item_id=i + 1, showing_order=order)
+            for i, s in enumerate(p.svo_set.all()):
+                s.rank = i + 1
+                s.save()
 
 
 class Group(BaseGroup):
@@ -114,8 +117,14 @@ class Player(BasePlayer):
         self.svo_type = st
         return st
 
+    def unanswered_svo_left(self):
+        return self.svo_set.filter(answer__isnull=True).exists()
+
 
 class SVO(djmodels.Model):
+    class Meta:
+        ordering = ['showing_order']
+
     answer = models.IntegerField(doc='choice of player for the specific item')
     player = djmodels.ForeignKey(to=Player, help_text='connection to player model')
     item_id = models.IntegerField(doc="""an id of svo as it is listed here:
@@ -124,6 +133,7 @@ class SVO(djmodels.Model):
      Nothing :) can limit you to add more
      """)
     showing_order = models.FloatField(doc='to randomize items')
+    rank = models.IntegerField(doc='for showing the order at pages (surprisngly hard to get rank otherwise')
 
     def get_svo_object(self):
         # TODO: when we explicitely state item id in svo object, no need for this BS with -1

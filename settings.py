@@ -101,7 +101,8 @@ SESSION_CONFIGS = [
         'display_name': 'SVO Measure (Murphy et al., 2011). 6 items',
         'num_demo_participants': 1,
         'app_sequence': ['svo'],
-        'random_order': True
+        'random_order': True,
+        'items_per_page':2,
     },
     {
         'name': 'svofull',

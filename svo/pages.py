@@ -8,13 +8,16 @@ from .forms import SVOFormSet
 
 class Results(Page):
     ...
+
     def vars_for_template(self):
-        return {'angle':round(self.player.svo_angle)}
+        return {'angle': round(self.player.svo_angle)}
 
 
 class Svo(Page):
     def get_queryset(self):
-        return self.player.svo_set.all().order_by("showing_order")
+        items_per_page=self.session.config.get('items_per_page',1)
+        sliced_q = self.player.svo_set.filter(answer__isnull=True)[:items_per_page]
+        return self.player.svo_set.filter(id__in=sliced_q)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -25,15 +28,20 @@ class Svo(Page):
         self.object = self.get_object()
         self.form = self.get_form(
             data=self.request.POST, files=self.request.FILES, instance=self.object)
-        context = super().get_context_data()
+
 
         formset = SVOFormSet(self.request.POST, instance=self.player, queryset=self.get_queryset())
-        context['formset'] = formset
+
         if not formset.is_valid():
+            context = self.get_context_data()
+            context['formset'] = formset
             self.form.add_error(None, 'all fields are required!')
             context['form'] = self.form
             return self.render_to_response(context)
         formset.save()
+        if self.player.unanswered_svo_left():
+            context = self.get_context_data()
+            return self.render_to_response(context)
         return super().post()
 
     def before_next_page(self):

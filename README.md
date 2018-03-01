@@ -45,4 +45,7 @@ settings:
 * `secondary` defines whether the full (15 items) or primary version of SVO will be shown. Default: _primary_ 
 
 
- 
+#### Changing the number of items show on the page
+you can change the number of items shown per page, by setting `items_per_page` setting
+in `settings.py`. By default (if nothing is set), only one item is shown. WHen a participant 
+clicks 'Next' the next item is shown etc., until they are exhausted. 

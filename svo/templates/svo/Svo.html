@@ -8,9 +8,9 @@
 {% block content %}
     {{ formset.management_form }}
     {% for f in formset %}
-        <h5> Decision {{ forloop.counter}}:</h5>
+        <h5> Decision {{ f.instance.rank }}:</h5>
         {% for field in f %}
-            {% formfield field label=''%}
+            {% formfield field label='' %}
         {% endfor %}
     {% endfor %}
 

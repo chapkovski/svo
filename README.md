@@ -21,7 +21,7 @@ The answers for specific items are stored in a separate model `SVO` linked to
 each particular player. The answers are dumped to Player's model (for export) to a field `dump_answer` as a list
 of triplets:
 
-(*item id*, *ego value*, *alter value*, *order shown*),
+(*item id*; *ego value*; *alter value*; *order shown*),
 
 where *ego value* is the decision '_You receive_', *alter value* is the decision '_Other receives_' for each 
 individual SVO item. *item id* is a number as they are listed in Murphy et al. paper.  and 

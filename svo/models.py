@@ -148,7 +148,7 @@ class SVO(djmodels.Model):
         return obj.get_alter(self.answer)
 
     def to_dump(self):
-        return '{},{},{},{}'.format(self.item_id,
+        return '{};{};{};{}'.format(self.item_id,
                                     self.get_ego_value(),
                                     self.get_alter_value(),
                                     self.rank)

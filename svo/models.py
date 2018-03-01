@@ -4,7 +4,7 @@ from otree.api import (
 )
 import csv, json, random, math
 
-from .fields import SvoField
+
 from django.db import models as djmodels
 
 author = 'Philipp Chapkovski, UZH'

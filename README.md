@@ -38,6 +38,7 @@ settings:
         'app_sequence': ['svo'],
         'random_order': True,
         'secondary': True,
+        'items_per_page': 1,
     }
 ```
 
@@ -45,8 +46,9 @@ settings:
 
 * `secondary` defines whether the full (15 items) or primary version of SVO will be shown. Default: _primary_ 
 
+* `items_per_page` How many items per pages are shown (see below). Default: _1_
 
 #### Changing the number of items shown on the page
 you can change the number of items shown per page, by setting `items_per_page` setting
-in `settings.py`. By default (if nothing is set), only one item is shown. WHen a participant 
+in `settings.py`. By default (if nothing is set), only one item is shown. When a participant 
 clicks 'Next' the next item is shown etc., until they are exhausted. 

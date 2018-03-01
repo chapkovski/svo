@@ -98,19 +98,37 @@ SESSION_CONFIG_DEFAULTS = {
 SESSION_CONFIGS = [
     {
         'name': 'svoprimary',
-        'display_name': 'SVO Measure (Murphy et al., 2011). 6 items',
+        'display_name': 'SVO 6 items, 1 per page',
         'num_demo_participants': 1,
         'app_sequence': ['svo'],
         'random_order': True,
-        'items_per_page':2,
+
     },
     {
         'name': 'svofull',
-        'display_name': 'SVO Measure. Full version (15 items)',
+        'display_name': 'SVO Measure. Full version (15 items), 1 per page',
         'num_demo_participants': 1,
         'app_sequence': ['svo'],
         'random_order': True,
         'secondary': True,
+    },
+    {
+        'name': 'svoprimaryall',
+        'display_name': 'SVO 6 items, all in one page',
+        'num_demo_participants': 1,
+        'app_sequence': ['svo'],
+        'random_order': True,
+        'items_per_page': 6,
+
+    },
+    {
+        'name': 'svofullall',
+        'display_name': 'SVO Measure. Full version (15 items), all in one page',
+        'num_demo_participants': 1,
+        'app_sequence': ['svo'],
+        'random_order': True,
+        'secondary': True,
+        'items_per_page': 15,
     }
 ]
 

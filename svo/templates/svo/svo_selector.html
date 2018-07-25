@@ -2,7 +2,7 @@
     <tr class="svotr svot">
         <th class="svot  svoth">You receive:</th>
         {% for i in top_row %}
-            <td class="svot svotd"><label for="{{ attrs.id }}_{{ forloop.counter }}">{{ i }}</label>
+            <td class="svot svotd"><label for="{{ widget.name }}_{{ forloop.counter }}">{{ i }}</label>
             </td>
         {% endfor %}
     </tr>
@@ -29,7 +29,7 @@
         <th class="svot svoth">Other receives:</th>
 
         {% for i in bottom_row %}
-            <td class="svot svotd"><label for="{{ attrs.id }}_{{ forloop.counter }}">{{ i }}</label></td>
+            <td class="svot svotd"><label for="{{ widget.name }}_{{ forloop.counter }}">{{ i }}</label></td>
         {% endfor %}
     </tr>
 </table>

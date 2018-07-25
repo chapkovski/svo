@@ -1,5 +1,5 @@
 {% extends "global/Page.html" %}
-{% load staticfiles otree %}
+{% load static otree %}
 
 {% block title %}
     SVO measure
@@ -7,6 +7,7 @@
 
 {% block content %}
     {{ formset.management_form }}
+
     {% for f in formset %}
         <h5> Decision {{ f.instance.rank }}:</h5>
         {% for field in f %}

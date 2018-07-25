@@ -1,7 +1,7 @@
 import django.forms as forms
 from .models import Player, SVO
 from django.forms import inlineformset_factory
-
+import logging
 
 class SVOChoiceWidget(forms.widgets.RadioSelect):
     template_name = 'svo/svo_selector.html'
@@ -25,7 +25,6 @@ class SVOChoiceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         obj = getattr(self, 'instance', None)
-
         self.fields['answer'].widget.choices = obj.get_svo_object().choices
         self.fields['answer'].widget.top_row = obj.get_svo_object().ego
         self.fields['answer'].widget.bottom_row = obj.get_svo_object().alter

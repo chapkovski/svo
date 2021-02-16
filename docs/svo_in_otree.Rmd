@@ -1,15 +1,20 @@
+---
+title: "Social Value Orientation (SVO): oTree implementation"
+author: "Philipp Chapkovski, HSE-Moscow"
+date: "2/15/2021"
+output: pdf_document
+bibliography: refs.bib
+abstract: |
+ This is the description of oTree implementation of Social Value orientation (SVO). There are several ways to present SVO. First there is a set of 6 primary items, and 9 secondary ones. Apart from the length of the choice set, there are also two ways to present them: either one by one, or the entire choice set on a single page. The provided code gives to a research the opportunity to modify both options: choosing between short and long versions of SVO, and to present them one per page or all items simultaneously. In addition the `results` page can be optionally shown to a participant with the categorization (prosocial etc.) and the SVO angle. That can be helpful to check whether the provision of this information affects a participant's behavior in the future. 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
 # Social value orientation measure
-## (Murphy, Ackermann,  Handgraaf, 2011)
 
-
-## Citation:
-If you use this code please cite:
-
-> 
-
-## How to use/Description
-
-This is a prototype of Social value orientation measure in oTree.
+This is a prototype of Social value orientation [@murphy2011measuring] measure in oTree[@chen2016otree].
 
 It uses a set of Dictator-like decisions, that defines the measure of 
 prosociality of the subject. Please, read more at the author's (Ryan Murphy) 
@@ -57,6 +62,10 @@ settings:
 * `items_per_page` How many items per pages are shown (see below). Default: _1_
 
 #### Changing the number of items shown on the page
+
 you can change the number of items shown per page, by setting `items_per_page` setting
 in `settings.py`. By default (if nothing is set), only one item is shown. When a participant 
 clicks 'Next' the next item is shown etc., until they are exhausted. 
+
+## References
+

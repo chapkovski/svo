@@ -4,7 +4,6 @@ from otree.api import (
 )
 import csv, json, random, math
 
-
 from django.db import models as djmodels
 
 author = 'Philipp Chapkovski, UZH'
@@ -126,7 +125,7 @@ class SVO(djmodels.Model):
         ordering = ['showing_order']
 
     answer = models.IntegerField(doc='choice of player for the specific item')
-    player = djmodels.ForeignKey(to=Player, help_text='connection to player model')
+    player = djmodels.ForeignKey(to=Player, help_text='connection to player model', on_delete=djmodels.CASCADE)
     item_id = models.IntegerField(doc="""an id of svo as it is listed here:
      http://ryanomurphy.com/styled-2/downloads/index.html
      have a look at both primary (1-6) and secondary (7-15) measures. 
@@ -152,3 +151,16 @@ class SVO(djmodels.Model):
                                     self.get_ego_value(),
                                     self.get_alter_value(),
                                     self.rank)
+
+
+def custom_export(players):
+    # header row
+    yield ['session', 'participant_code', 'item_id', 'ego', 'alter']
+    for p in players:
+        for s in p.svo_set.filter(answer__isnull=False):
+            yield [p.session.code,
+                   p.participant.code,
+                   s.item_id,
+                   s.get_ego_value(),
+                   s.get_alter_value()
+                   ]
